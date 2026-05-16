@@ -59,15 +59,13 @@ def parse_table(html):
 
 def scrape():
     all_data = []
+    saved_count = 0
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
 
         page.goto(URL, wait_until="networkidle")
-
-        # while True:
-        #     print("\n--- New Pagination Window ---")
 
         buttons = page.locator("a.page")
         count = buttons.count()
@@ -117,10 +115,13 @@ def scrape():
                 )
 
                 print (f"Saved to DB: {item['post']}")
+                saved_count += 1
 
             except Exception as ex:
                 print(f"Failed downloading: {pdf_link}")
                 print(ex)
+
+            print(f"ISRO scraper saved {saved_count} records")
 
 if __name__ == "__main__":
     scrape()

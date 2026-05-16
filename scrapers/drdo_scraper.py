@@ -6,6 +6,7 @@ from common.data_service import is_url_saved, save_job_opening
 BASE_URL = "https://drdo.gov.in/drdo/en/offerings/vacancies"
 
 def scrape():
+    saved_count = 0
     with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=True
@@ -87,6 +88,7 @@ def scrape():
                     )
 
                     print (f"Saved to DB: {opening_header}")
+                    saved_count += 1
 
                 except Exception as ex:
                     print(f"Failed downloading: {full_url}")
@@ -94,6 +96,8 @@ def scrape():
 
             page_index += 1
         browser.close()
+
+    print(f"DRDO scraper saved {saved_count} records")
 
 
 if __name__ == "__main__":

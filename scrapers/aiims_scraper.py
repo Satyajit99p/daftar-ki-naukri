@@ -42,6 +42,7 @@ def _extract_pdf_links(html, base_url):
 
 
 def _save_openings(government_body, items):
+    saved_count = 0
     for opening_header, pdf_link in items:
         if is_url_saved(pdf_link):
             print(f"Already saved in DB: {pdf_link}")
@@ -57,6 +58,10 @@ def _save_openings(government_body, items):
         )
 
         print(f"Saved to DB: {opening_header}")
+        saved_count += 1
+
+    print(f"{government_body} scraper saved {saved_count} records")
+    return saved_count
 
 def scrape():
     with sync_playwright() as p:

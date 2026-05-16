@@ -6,6 +6,7 @@ BASE_URL = "https://recruitment.nic.in"
 
 
 def scrape():
+    saved_count = 0
     with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=True
@@ -59,12 +60,15 @@ def scrape():
                 )
 
                 print (f"Saved to DB: {opening_header}")
+                saved_count += 1
 
             except Exception as ex:
                 print(f"Failed downloading: {pdf_link}")
                 print(ex)
 
         browser.close()
+
+    print(f"NIC scraper saved {saved_count} records")
 
 
 if __name__ == "__main__":
