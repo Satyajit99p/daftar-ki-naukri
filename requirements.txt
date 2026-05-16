@@ -1,0 +1,7 @@
+beautifulsoup4
+playwright
+pymupdf
+python-dateutil
+python-dotenv
+supabase
+requests

@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+playwright/.cache/
+.vscode/
+.DS_Store
+Thumbs.db
