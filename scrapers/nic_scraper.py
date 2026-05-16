@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from common.data_service import is_url_saved, save_job_opening
 
-BASE_URL = "https://recruitment.nic.in/"
+BASE_URL = "https://recruitment.nic.in"
 
 
 def scrape():

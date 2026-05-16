@@ -53,3 +53,19 @@ def save_job_opening(government_body, job_tag,job_title, posted_date, deadline, 
     except Exception as ex:
         print(f"Error saving job opening: {ex}")
         raise
+
+
+def fetch_job_openings():
+    client = _get_client()
+
+    try:
+        response = (
+            client.table("job_openings")
+            .select("government_body, job_tag, title, posted_date, deadline, url")
+            .order("posted_date", desc=True)
+            .execute()
+        )
+        return response.data or []
+    except Exception as ex:
+        print(f"Error fetching job openings: {ex}")
+        raise
