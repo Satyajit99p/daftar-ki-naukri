@@ -12,7 +12,7 @@ from scrapers.rbi_scraper import scrape as scrape_rbi
 
 def run_all_scrapers():
 	scrapers = [
-		("AIIMS", scrape_aiims),
+		# ("AIIMS", scrape_aiims), # AIIMS has multiple sites and the scraper is not fully ready yet
 		("DRDO", scrape_drdo),
 		("ICMR", scrape_icmr),
 		("ISRO", scrape_isro),
