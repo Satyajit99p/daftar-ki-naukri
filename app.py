@@ -67,7 +67,7 @@ st.markdown(
 )
 
 
-st.title("Government Job Openings")
+st.title("Sarkari Naukri")
 
 records = fetch_job_openings()
 
@@ -92,16 +92,41 @@ def _format_date(value):
         return "N/A"
 
     if isinstance(value, datetime):
-        return value.strftime("%d %b %Y")
+        return value.strftime("%B %d, %Y")
 
     if isinstance(value, str):
-        clean_value = value.replace("T", "+00:00")
         try:
-            return datetime.fromisoformat(clean_value).strftime("%d %b %Y")
+            clean_value = value.replace("Z", "+00:00")
+            return datetime.fromisoformat(clean_value).strftime("%B %d, %Y")
         except ValueError:
             return value
 
     return str(value)
+
+
+def _parse_date_for_sort(value):
+    if not value:
+        return None
+
+    if isinstance(value, datetime):
+        return value
+
+    if isinstance(value, str):
+        try:
+            clean_value = value.replace("Z", "+00:00")
+            return datetime.fromisoformat(clean_value)
+        except ValueError:
+            return None
+
+    return None
+
+
+def _get_priority_sort_date(record):
+    for key in ("posted_date", "deadline", "created_date"):
+        parsed = _parse_date_for_sort(record.get(key))
+        if parsed:
+            return parsed
+    return datetime.min
 
 
 def _render_cards(records_to_render):
@@ -137,6 +162,7 @@ for record in records:
             "posted_date": _format_date(record.get("posted_date")),
             "deadline": _format_date(record.get("deadline")),
             "url": record.get("url"),
+            "_sort_date": _get_priority_sort_date(record),
         }
     )
 
@@ -167,6 +193,14 @@ for body_name, body_tab in zip(sorted_bodies, body_tabs):
                             if record["job_tag"] == label
                         ]
 
+                    visible_records.sort(
+                        key=lambda entry: entry.get("_sort_date", datetime.min),
+                        reverse=True,
+                    )
                     _render_cards(visible_records)
         else:
+            body_records.sort(
+                key=lambda entry: entry.get("_sort_date", datetime.min),
+                reverse=True,
+            )
             _render_cards(body_records)

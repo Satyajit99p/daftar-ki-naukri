@@ -61,8 +61,9 @@ def fetch_job_openings():
     try:
         response = (
             client.table("job_openings")
-            .select("government_body, job_tag, title, posted_date, deadline, url")
-            .order("posted_date", desc=True)
+            .select(
+                "government_body, job_tag, title, posted_date, deadline, url, created_date"
+            )
             .execute()
         )
         return response.data or []
