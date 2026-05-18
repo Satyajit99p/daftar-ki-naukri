@@ -26,6 +26,11 @@ st.markdown(
             justify-content: space-between;
             height: 100%;
         }
+        .recent-card {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+            background: linear-gradient(135deg, #fff7ed 0%, #ffffff 55%);
+        }
         .tab-title {
             font-size: 1.05rem;
             font-weight: 600;
@@ -53,6 +58,11 @@ st.markdown(
                 color: #f8fafc;
                 border-color: #1f2937;
                 box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+            }
+            .recent-card {
+                border-color: #fbbf24;
+                box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.28);
+                background: linear-gradient(135deg, #1f2937 0%, #0f172a 60%);
             }
             .tab-meta {
                 color: #cbd5f5;
@@ -104,7 +114,7 @@ def _format_date(value):
     return str(value)
 
 
-def _parse_date_for_sort(value):
+def _parse_date(value):
     if not value:
         return None
 
@@ -119,6 +129,19 @@ def _parse_date_for_sort(value):
             return None
 
     return None
+
+
+def _is_recent(record):
+    created_at = _parse_date(record.get("created_date"))
+    if not created_at:
+        return False
+
+    created_at = created_at.replace(tzinfo=None)
+    return (datetime.now() - created_at).total_seconds() <= 24 * 60 * 60
+
+
+def _parse_date_for_sort(value):
+    return _parse_date(value)
 
 
 def _get_priority_sort_date(record):
@@ -139,9 +162,10 @@ def _render_cards(records_to_render):
                 posted_date = html.escape(record["posted_date"])
                 deadline = html.escape(record["deadline"])
                 url = record["url"] or "#"
+                highlight_class = "tab-card recent-card" if record.get("is_recent") else "tab-card"
                 st.markdown(
                     f"""
-                    <div class="tab-card">
+                    <div class="{highlight_class}">
                         <div class="tab-title">{title}</div>
                         <div class="tab-meta">Posted: {posted_date} | Deadline: {deadline}</div>
                         <a class="tab-link" href="{url}" target="_blank" rel="noopener noreferrer">Open job posting</a>
@@ -163,6 +187,7 @@ for record in records:
             "deadline": _format_date(record.get("deadline")),
             "url": record.get("url"),
             "_sort_date": _get_priority_sort_date(record),
+            "is_recent": _is_recent(record),
         }
     )
 
