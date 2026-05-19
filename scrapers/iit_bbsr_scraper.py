@@ -45,16 +45,6 @@ def scrape_page(url):
             "date": posted_date
         })
 
-    # # Pagination next page
-    # next_page = None
-
-    # next_link = first_widget.select_one(
-    #     'nav.elementor-pagination a.next'
-    # )
-
-    # if next_link:
-    #     next_page = next_link.get("href")
-
     return valid_data
 
 def scrape():
